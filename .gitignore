@@ -8,3 +8,6 @@ AmeliaBlume/Intermediate/
 AmeliaBlume/Binaries/
 AmeliaBlume/DerivedDataCache/
 AmeliaBlume/Saved/
+*.sln
+*.opensdf
+*.suo
