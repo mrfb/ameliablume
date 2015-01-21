@@ -3,6 +3,7 @@
 #include "AmeliaBlume.h"
 #include "AmeliaBlumeCharacter.h"
 
+
 AAmeliaBlumeCharacter::AAmeliaBlumeCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -37,6 +38,8 @@ AAmeliaBlumeCharacter::AAmeliaBlumeCharacter(const FObjectInitializer& ObjectIni
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->MaxFlySpeed = 600.f;
 
+	isFacingRight = true;
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -51,14 +54,24 @@ void AAmeliaBlumeCharacter::SetupPlayerInputComponent(class UInputComponent* Inp
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	InputComponent->BindAxis("MoveRight", this, &AAmeliaBlumeCharacter::MoveRight);
 
+	InputComponent->BindAction("Water", IE_Pressed, this, &AAmeliaBlumeCharacter::StartWater);
 	InputComponent->BindTouch(IE_Pressed, this, &AAmeliaBlumeCharacter::TouchStarted);
 	InputComponent->BindTouch(IE_Released, this, &AAmeliaBlumeCharacter::TouchStopped);
+
+
 }
 
 void AAmeliaBlumeCharacter::MoveRight(float Value)
 {
 	// add movement in that direction
 	AddMovementInput(FVector(0.f,-1.f,0.f), Value);
+	UE_LOG(LogTemp, Warning, TEXT("Facing right = %d"),isFacingRight);
+	if (Value < 0)
+		isFacingRight = false;
+	else if (Value > 0)
+		isFacingRight = true;
+	else
+		isFacingRight = isFacingRight;
 }
 
 void AAmeliaBlumeCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)
@@ -70,5 +83,35 @@ void AAmeliaBlumeCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, co
 void AAmeliaBlumeCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	StopJumping();
+}
+
+void AAmeliaBlumeCharacter::StartWater()
+{
+	UE_LOG(LogTemp, Warning, TEXT("You pressed RT"));
+	UWorld* const World = GetWorld();
+	if (World)
+	{
+		// Set the spawn parameters
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = Instigator;
+
+		// Get a random location to spawn at
+		FVector SpawnLocation = GetActorLocation();
+		if (isFacingRight)
+			SpawnLocation.Y = SpawnLocation.Y - 100;
+		else
+			SpawnLocation.Y = SpawnLocation.Y + 100;
+
+		// Get a random rotation for the spawned item
+		FRotator SpawnRotation;
+		SpawnRotation.Yaw = FMath::FRand() * 360.f;
+		SpawnRotation.Pitch = FMath::FRand() * 360.f;
+		SpawnRotation.Roll = FMath::FRand() * 360.f;
+
+		// spawn the pickup
+		AWaterDrop* const SpawnedPickUp = World->SpawnActor<AWaterDrop>(WhatToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("This is an on screen message!"));
 }
 
