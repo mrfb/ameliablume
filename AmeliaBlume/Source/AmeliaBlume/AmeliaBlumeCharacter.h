@@ -1,7 +1,9 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/Character.h"
+#include "WaterDrop.h"
 #include "AmeliaBlumeCharacter.generated.h"
+
 
 UCLASS(config=Game)
 class AAmeliaBlumeCharacter : public ACharacter
@@ -16,6 +18,12 @@ class AAmeliaBlumeCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	UPROPERTY(EditAnywhere, Category = Spawning)
+		TSubclassOf<class AWaterDrop> WhatToSpawn;
+
+	UPROPERTY(EditAnywhere)
+		bool isFacingRight;
+
 protected:
 
 	/** Called for side to side input */
@@ -26,6 +34,8 @@ protected:
 
 	/** Handle touch stop event. */
 	void TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location);
+
+	void StartWater();
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
