@@ -54,7 +54,9 @@ void AAmeliaBlumeCharacter::SetupPlayerInputComponent(class UInputComponent* Inp
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	InputComponent->BindAxis("MoveRight", this, &AAmeliaBlumeCharacter::MoveRight);
 
+
 	InputComponent->BindAction("Water", IE_Pressed, this, &AAmeliaBlumeCharacter::StartWater);
+	InputComponent->BindAction("Water", IE_Released, this, &AAmeliaBlumeCharacter::StopWater);
 	InputComponent->BindTouch(IE_Pressed, this, &AAmeliaBlumeCharacter::TouchStarted);
 	InputComponent->BindTouch(IE_Released, this, &AAmeliaBlumeCharacter::TouchStopped);
 
@@ -65,7 +67,7 @@ void AAmeliaBlumeCharacter::MoveRight(float Value)
 {
 	// add movement in that direction
 	AddMovementInput(FVector(0.f,-1.f,0.f), Value);
-	UE_LOG(LogTemp, Warning, TEXT("Facing right = %d"),isFacingRight);
+	//UE_LOG(LogTemp, Warning, TEXT("Facing right = %d"),isFacingRight);
 	if (Value < 0)
 		isFacingRight = false;
 	else if (Value > 0)
@@ -87,7 +89,7 @@ void AAmeliaBlumeCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, co
 
 void AAmeliaBlumeCharacter::StartWater()
 {
-	UE_LOG(LogTemp, Warning, TEXT("You pressed RT"));
+	//UE_LOG(LogTemp, Warning, TEXT("You pressed RT"));
 	UWorld* const World = GetWorld();
 	if (World)
 	{
@@ -109,9 +111,20 @@ void AAmeliaBlumeCharacter::StartWater()
 		SpawnRotation.Pitch = FMath::FRand() * 360.f;
 		SpawnRotation.Roll = FMath::FRand() * 360.f;
 
-		// spawn the pickup
-		AWaterDrop* const SpawnedPickUp = World->SpawnActor<AWaterDrop>(WhatToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		// spawn the water
+		AWaterDrop* const water = World->SpawnActor<AWaterDrop>(WhatToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+
 	}
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("This is an on screen message!"));
+}
+
+void  AAmeliaBlumeCharacter::StopWater()
+{
+	AWaterDrop* waterDrop = Cast<AWaterDrop>(WhatToSpawn);
+	waterDrop->DoSomething();
+}
+
+void TestTrigger(float value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Facing right = %d"),value);
 }
 

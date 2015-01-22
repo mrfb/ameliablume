@@ -37,6 +37,9 @@ protected:
 
 	void StartWater();
 
+	void StopWater();
+
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface

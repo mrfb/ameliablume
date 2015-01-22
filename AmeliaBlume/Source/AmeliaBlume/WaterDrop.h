@@ -12,8 +12,10 @@ UCLASS()
 class AMELIABLUME_API AWaterDrop : public AActor
 {
 	GENERATED_BODY()
-		
-	
+
+public:
+	void DoSomething();
+
 	
 	
 };

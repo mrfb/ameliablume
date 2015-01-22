@@ -6,5 +6,13 @@
 
 
 
+void AWaterDrop::DoSomething()
+{
+	UE_LOG(LogTemp, Warning, TEXT("You released RT"));
+}
+
+
+
+
 
 
