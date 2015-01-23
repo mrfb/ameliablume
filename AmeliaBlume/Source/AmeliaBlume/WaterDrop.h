@@ -14,8 +14,11 @@ class AMELIABLUME_API AWaterDrop : public AActor
 	GENERATED_BODY()
 
 public:
+
 	void DoSomething();
 
-	
+	virtual void Tick(float DeltaSeconds) OVERRIDE;
+
+	AWaterDrop(const FObjectInitializer& ObjectInitializer);
 	
 };

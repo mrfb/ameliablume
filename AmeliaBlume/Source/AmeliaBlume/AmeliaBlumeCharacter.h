@@ -24,10 +24,15 @@ class AAmeliaBlumeCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 		bool isFacingRight;
 
+	UPROPERTY(EditAnywhere)
+		int32 waterCooldown;
+
 protected:
 
 	/** Called for side to side input */
 	void MoveRight(float Val);
+
+	void KeepWatering(float Val);
 
 	/** Handle touch inputs. */
 	void TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location);
@@ -38,6 +43,8 @@ protected:
 	void StartWater();
 
 	void StopWater();
+
+
 
 
 	// APawn interface

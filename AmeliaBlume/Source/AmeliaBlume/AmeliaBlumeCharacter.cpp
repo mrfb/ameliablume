@@ -39,6 +39,8 @@ AAmeliaBlumeCharacter::AAmeliaBlumeCharacter(const FObjectInitializer& ObjectIni
 	GetCharacterMovement()->MaxFlySpeed = 600.f;
 
 	isFacingRight = true;
+	waterCooldown = 1;
+
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -53,10 +55,13 @@ void AAmeliaBlumeCharacter::SetupPlayerInputComponent(class UInputComponent* Inp
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	InputComponent->BindAxis("MoveRight", this, &AAmeliaBlumeCharacter::MoveRight);
+	
+	InputComponent->BindAxis("WaterHold", this, &AAmeliaBlumeCharacter::KeepWatering);
 
 
-	InputComponent->BindAction("Water", IE_Pressed, this, &AAmeliaBlumeCharacter::StartWater);
-	InputComponent->BindAction("Water", IE_Released, this, &AAmeliaBlumeCharacter::StopWater);
+	//InputComponent->BindAction("Water", IE_Pressed, this, &AAmeliaBlumeCharacter::StartWater);
+	//InputComponent->BindAction("Water", IE_Released, this, &AAmeliaBlumeCharacter::StopWater);
+
 	InputComponent->BindTouch(IE_Pressed, this, &AAmeliaBlumeCharacter::TouchStarted);
 	InputComponent->BindTouch(IE_Released, this, &AAmeliaBlumeCharacter::TouchStopped);
 
@@ -74,6 +79,18 @@ void AAmeliaBlumeCharacter::MoveRight(float Value)
 		isFacingRight = true;
 	else
 		isFacingRight = isFacingRight;
+}
+
+void AAmeliaBlumeCharacter::KeepWatering(float Value)
+{
+	GetWorld()->GetTimeSeconds();
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), waterCooldown);
+	if (Value > 0 && (GetWorld()->GetTimeSeconds() - waterCooldown) > 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Watering %d"), waterCooldown);
+		waterCooldown = GetWorld()->GetTimeSeconds();
+		StartWater();
+	}
 }
 
 void AAmeliaBlumeCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)
@@ -119,12 +136,7 @@ void AAmeliaBlumeCharacter::StartWater()
 
 void  AAmeliaBlumeCharacter::StopWater()
 {
-	AWaterDrop* waterDrop = Cast<AWaterDrop>(WhatToSpawn);
-	waterDrop->DoSomething();
-}
-
-void TestTrigger(float value)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Facing right = %d"),value);
+	//AWaterDrop* waterDrop = Cast<AWaterDrop>(WhatToSpawn);
+	//waterDrop->DoSomething();
 }
 
