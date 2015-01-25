@@ -24,6 +24,10 @@ class AAmeliaBlumeCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 		bool isFacingRight;
 
+	//using this to keep the character locked to the correct plane
+	UPROPERTY(EditAnywhere)
+		float lockedAxisValue;
+
 protected:
 
 	/** Called for side to side input */
@@ -49,4 +53,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	//Overrides the tick function so it's editable in the cpp
+	virtual void Tick(float DeltaTime) override;
 };
