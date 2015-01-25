@@ -3,6 +3,8 @@
 #pragma once
 
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "AI_Deer_Controller.generated.h"
 
 /**
@@ -13,10 +15,31 @@ class AMELIABLUME_API AAI_Deer_Controller : public AAIController
 {
 	GENERATED_BODY()
 
-	void checkIfPlayerSeen();
+	//Define blackboard component (used to be a special TSubobjectptr call, now just normal pointers
+	UPROPERTY(transient)
+	UBlackboardComponent* BlackboardComp;
 
+	//define the Behavior Tree component
+	UPROPERTY(transient)
+	UBehaviorTreeComponent* BehaviorComp;
+
+	virtual void Possess(class APawn *InPawn);
+
+	//sets the player as the object the deer will chase
+	void SetEnemy(class APawn *InPawn);
+
+	//Behavior that causes AI to track the player
+	UFUNCTION(BlueprintCallable, Category = Behavior)
+	void SearchForEnemy();
+
+	void checkIfPlayerSeen();
 
 	void chasePlayer();
 	
-	
+protected:
+	uint8 EnemyKeyID;
+	uint8 EnemyLocationID;
+
+public:
+	AAI_Deer_Controller(const class FObjectInitializer& PCIP);
 };

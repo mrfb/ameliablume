@@ -2,10 +2,18 @@
 
 #include "AmeliaBlume.h"
 #include "Deer.h"
+#include "AI_Deer_Controller.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 
 ADeer::ADeer(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+
+	//set its controller class
+	AIControllerClass = AAI_Deer_Controller::StaticClass();
+
+
 	//set up facing the proper direction, -1 for left, 1 for right
 	faceDirection = -1;
 
@@ -23,7 +31,7 @@ void ADeer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	//simple AI movement, will be controlled by states later
-	MoveRight(faceDirection * 0.5);
+	/*MoveRight(faceDirection * 0.5);
 
 
 	//Simple Back & forth. If the velocity is ~0, it's collided and need to turn around
@@ -43,7 +51,7 @@ void ADeer::Tick(float DeltaTime)
 	}
 	else
 		recentlyRotated = false;
-
+	*/
 	//Some simple code to keep character locked to a plane
 	FVector currLoc = GetActorLocation();
 	FVector newLoc = FVector(lockedAxisValue, currLoc.Y, currLoc.Z);

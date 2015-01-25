@@ -3,7 +3,11 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "Deer.generated.h"
+
 
 /**
  * 
@@ -12,6 +16,12 @@ UCLASS()
 class AMELIABLUME_API ADeer : public ACharacter
 {
 	GENERATED_BODY()
+
+public:
+	ADeer(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(EditAnywhere, Category = Behavior)
+		class UBehaviorTree* DeerBehavior;
 
 	//saves the initial value of the axis rather than memorizing a hard number
 	UPROPERTY(EditAnywhere)
@@ -30,10 +40,8 @@ class AMELIABLUME_API ADeer : public ACharacter
 		int32 rotationCooldown;
 
 	//override default tick function
-	virtual void Tick(float DeltaTime) OVERRIDE;
+	virtual void Tick(float DeltaTime) override;
 	virtual void MoveRight(float value);
 
-public:
-	ADeer(const FObjectInitializer& ObjectInitializer);
 	
 };
