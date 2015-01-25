@@ -39,6 +39,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		int32 rotationCooldown;
 
+	UPROPERTY(EditAnywhere)
+		bool isCharging;
+
 	//override default tick function
 	virtual void Tick(float DeltaTime) override;
 	virtual void MoveRight(float value);

@@ -20,15 +20,15 @@ AAI_Deer_Controller::AAI_Deer_Controller(const class FObjectInitializer& PCIP)
 void AAI_Deer_Controller::Possess(class APawn* InPawn)
 {
 	Super::Possess(InPawn);
-	ADeer* Bot = Cast<ADeer>(InPawn);
-	if (Bot && Bot->DeerBehavior)
+	MyDeer = Cast<ADeer>(InPawn);
+	if (MyDeer && MyDeer->DeerBehavior)
 	{
-		BlackboardComp->InitializeBlackboard(*(Bot->DeerBehavior->BlackboardAsset));
+		BlackboardComp->InitializeBlackboard(*(MyDeer->DeerBehavior->BlackboardAsset));
 
 		EnemyKeyID = BlackboardComp->GetKeyID("Enemy");
 		EnemyLocationID = BlackboardComp->GetKeyID("Destination");
 
-		BehaviorComp->StartTree(*(Bot->DeerBehavior));
+		BehaviorComp->StartTree(*(MyDeer->DeerBehavior));
 	}
 }
 
@@ -42,6 +42,7 @@ void AAI_Deer_Controller::SearchForEnemy()
 	float BestDistSq = MAX_FLT;
 	AAmeliaBlumeCharacter* BestPawn = NULL;
 
+	//iterates through all possible characters to chase, then picks the closest one
 	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
 	{
 		AAmeliaBlumeCharacter* TestPawn = Cast<AAmeliaBlumeCharacter>(*It);
@@ -68,8 +69,45 @@ void AAI_Deer_Controller::SetEnemy(class APawn *InPawn)
 	BlackboardComp->SetValueAsVector(EnemyLocationID, InPawn->GetActorLocation());
 }
 
-void AAI_Deer_Controller::checkIfPlayerSeen()
+//True if Deer is facing player and player is within a certain distance
+bool AAI_Deer_Controller::checkIfPlayerSeen()
 {
+
+	//get the player character
+	ACharacter* player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (player == NULL)
+		return false;
+
+	//assign location vector for easier access
+	FVector botLoc = MyDeer->GetActorLocation();
+	FVector playerLoc = player->GetActorLocation();
+
+	//get rotation of deer to tell what direction it's facing
+	FRotator deerRotation = MyDeer->GetActorRotation();
+
+	if (botLoc.Y - playerLoc.Y < 0 && !(deerRotation.Yaw > 80 && deerRotation.Yaw < 100) )
+	{
+		return true;
+		MyDeer->isCharging = true;
+	}
+	else if (botLoc.Y - playerLoc.Y > 0 && (deerRotation.Yaw > -100 && deerRotation.Yaw < -80))
+	{
+		return true;
+		MyDeer->isCharging = true;
+	}
+
+	return false;
+}
+
+void AAI_Deer_Controller::idle()
+{
+
+	//forget the player for now, we've stopped chasing
+	BlackboardComp->ClearValue(EnemyKeyID);
+	BlackboardComp->ClearValue(EnemyLocationID);
+
+	MyDeer->isCharging = false;
+
 
 }
 

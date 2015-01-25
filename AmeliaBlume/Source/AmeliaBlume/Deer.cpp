@@ -13,6 +13,7 @@ ADeer::ADeer(const FObjectInitializer& ObjectInitializer)
 	//set its controller class
 	AIControllerClass = AAI_Deer_Controller::StaticClass();
 
+	isCharging = false;
 
 	//set up facing the proper direction, -1 for left, 1 for right
 	faceDirection = -1;
@@ -30,28 +31,32 @@ void ADeer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	//simple AI movement, will be controlled by states later
-	/*MoveRight(faceDirection * 0.5);
-
-
-	//Simple Back & forth. If the velocity is ~0, it's collided and need to turn around
-	if ( !recentlyRotated && GetVelocity().Y <= 0.1 && GetVelocity().Y >= -0.1)
+	if (!isCharging)
 	{
-		faceDirection *= -1;
-		recentlyRotated = true;
-		rotationCooldown = 60;
-	}
+		//simple AI movement, will be controlled by states later
+		MoveRight(faceDirection * 0.5);
 
-	if (rotationCooldown > 0)
-	{
-		rotationCooldown--;
-		FRotator quickRotate = GetActorRotation();
-		quickRotate.Yaw += 3.0;
-		SetActorRotation(quickRotate);
-	}
-	else
+
+		//Simple Back & forth. If the velocity is ~0, it's collided and need to turn around
+		if ( !recentlyRotated && GetVelocity().Y <= 0.1 && GetVelocity().Y >= -0.1)
+		{
+			faceDirection *= -1;
+			recentlyRotated = true;
+			rotationCooldown = 60;
+		}
+
+		if (rotationCooldown > 0)
+		{
+			rotationCooldown--;
+			FRotator quickRotate = GetActorRotation();
+			quickRotate.Yaw += 3.0;
+			SetActorRotation(quickRotate);
+		}
+		else
 		recentlyRotated = false;
-	*/
+		
+	}
+
 	//Some simple code to keep character locked to a plane
 	FVector currLoc = GetActorLocation();
 	FVector newLoc = FVector(lockedAxisValue, currLoc.Y, currLoc.Z);

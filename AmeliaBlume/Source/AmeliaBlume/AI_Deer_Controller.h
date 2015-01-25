@@ -23,6 +23,9 @@ class AMELIABLUME_API AAI_Deer_Controller : public AAIController
 	UPROPERTY(transient)
 	UBehaviorTreeComponent* BehaviorComp;
 
+	UPROPERTY(transient)
+		class ADeer* MyDeer;
+
 	virtual void Possess(class APawn *InPawn);
 
 	//sets the player as the object the deer will chase
@@ -32,9 +35,18 @@ class AMELIABLUME_API AAI_Deer_Controller : public AAIController
 	UFUNCTION(BlueprintCallable, Category = Behavior)
 	void SearchForEnemy();
 
-	void checkIfPlayerSeen();
+	//behavior that checks if the deer sees the player
+	UFUNCTION(BlueprintCallable, Category = Behavior)
+	bool checkIfPlayerSeen();
 
+	//behavior that makes deer idle
+	UFUNCTION(BlueprintCallable, Category = Behavior)
+	void idle();
+
+	//behavior that causes dee to chase player
+	UFUNCTION(BlueprintCallable, Category = Behavior)
 	void chasePlayer();
+
 	
 protected:
 	uint8 EnemyKeyID;
