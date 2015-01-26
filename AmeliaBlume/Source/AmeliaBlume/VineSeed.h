@@ -12,6 +12,10 @@ UCLASS()
 class AMELIABLUME_API AVineSeed : public ASeed
 {
 	GENERATED_BODY()
+
+public:
+	// Constructor
+	AVineSeed(const FObjectInitializer& ObjectInitializer);
 	
 	
 	
