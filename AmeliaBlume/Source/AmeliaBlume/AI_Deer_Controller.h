@@ -26,14 +26,15 @@ class AMELIABLUME_API AAI_Deer_Controller : public AAIController
 	UPROPERTY(transient)
 		class ADeer* MyDeer;
 
+	// horizontal distance player must be in in order to cause the deer to charge
+	UPROPERTY(EditAnywhere)
+		float chargeYDistance;
+
+	// vertical range player must be in in order to cause the deer to charge
+	UPROPERTY(EditAnywhere)
+		float chargeZDistance;
+
 	virtual void Possess(class APawn *InPawn);
-
-	//sets the player as the object the deer will chase
-	void SetEnemy(class APawn *InPawn);
-
-	//Behavior that causes AI to track the player
-	UFUNCTION(BlueprintCallable, Category = Behavior)
-	void SearchForEnemy();
 
 	//behavior that checks if the deer sees the player
 	UFUNCTION(BlueprintCallable, Category = Behavior)

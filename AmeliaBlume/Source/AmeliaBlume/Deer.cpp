@@ -19,9 +19,6 @@ ADeer::ADeer(const FObjectInitializer& ObjectInitializer)
 	//set up facing the proper direction, -1 for left, 1 for right
 	faceDirection = -1;
 
-	//recentlyRotated = true;
-	//rotationCooldown = 60;
-
 	//this would lock it to the location in the editor but it's not working properly
 	//lockedAxisValue = GetActorLocation().X;
 	//This locks it to the current location of the plane axis
@@ -31,10 +28,19 @@ ADeer::ADeer(const FObjectInitializer& ObjectInitializer)
 void ADeer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// keeps isFacingRight updated
+	FRotator deerRotation = GetActorRotation();
+	if (deerRotation.Yaw > 80 && deerRotation.Yaw < 100)
+		isFacingRight = false;
+	else if (deerRotation.Yaw > -100 && deerRotation.Yaw < -80)
+		isFacingRight = true;
+	else
+		isFacingRight = isFacingRight;
 	
 	if (!isCharging)
 	{
-		//simple AI movement, will be controlled by states later
+		//simple AI movement
 		MoveRight(faceDirection * 0.5);
 		
 	}
@@ -75,7 +81,7 @@ void ADeer::Tick(float DeltaTime)
 	else
 		recentlyRotated = false;
 
-	//Some simple code to keep character locked to a plane
+	// Some code to keep character locked to a plane
 	FVector currLoc = GetActorLocation();
 	FVector newLoc = FVector(lockedAxisValue, currLoc.Y, currLoc.Z);
 	SetActorLocation(newLoc);
@@ -86,11 +92,4 @@ void ADeer::MoveRight(float Value)
 	// add movement in that direction
 	AddMovementInput(FVector(0.f, -1.f, 0.f), Value);
 	UE_LOG(LogTemp, Warning, TEXT("Deer Facing right = %d"), isFacingRight);
-	FRotator deerRotation = GetActorRotation();
-	if (deerRotation.Yaw > 80 && deerRotation.Yaw < 100)
-		isFacingRight = false;
-	else if (deerRotation.Yaw > -100 && deerRotation.Yaw < -80)
-		isFacingRight = true;
-	else
-		isFacingRight = isFacingRight;
 }

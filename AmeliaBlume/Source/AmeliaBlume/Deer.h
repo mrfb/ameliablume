@@ -42,16 +42,14 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool recentlyRotated;
 
-
-	//override default tick function
-	virtual void Tick(float DeltaTime) override;
-	virtual void MoveRight(float value);
-
-private:
 	UPROPERTY(EditAnywhere)
 		int8 faceDirection;
 
 	UPROPERTY(EditAnywhere)
 		int32 rotationCooldown;
+
+	//override default tick function
+	virtual void Tick(float DeltaTime) override;
+	virtual void MoveRight(float value);
 	
 };

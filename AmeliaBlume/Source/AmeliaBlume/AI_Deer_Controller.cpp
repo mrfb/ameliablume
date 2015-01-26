@@ -7,6 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Engine.h"
 
 //contstructor
 AAI_Deer_Controller::AAI_Deer_Controller(const class FObjectInitializer& PCIP)
@@ -15,6 +16,10 @@ AAI_Deer_Controller::AAI_Deer_Controller(const class FObjectInitializer& PCIP)
 	BlackboardComp = PCIP.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackBoardComp"));
 
 	BehaviorComp = PCIP.CreateDefaultSubobject<UBehaviorTreeComponent>(this, TEXT("BehaviorComp"));
+
+	//set our seeing distance values
+	chargeYDistance = 800.0;
+	chargeZDistance = 400.0;
 }
 
 void AAI_Deer_Controller::Possess(class APawn* InPawn)
@@ -32,42 +37,6 @@ void AAI_Deer_Controller::Possess(class APawn* InPawn)
 	}
 }
 
-void AAI_Deer_Controller::SearchForEnemy()
-{
-	APawn* MyBot = GetPawn();
-	if (MyBot == NULL)
-		return;
-
-	const FVector MyLoc = MyBot->GetActorLocation();
-	float BestDistSq = MAX_FLT;
-	AAmeliaBlumeCharacter* BestPawn = NULL;
-
-	//iterates through all possible characters to chase, then picks the closest one
-	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
-	{
-		AAmeliaBlumeCharacter* TestPawn = Cast<AAmeliaBlumeCharacter>(*It);
-		if (TestPawn)
-		{
-			const float DistSq = FVector::Dist(TestPawn->GetActorLocation(), MyLoc);
-			if (DistSq < BestDistSq)
-			{
-				BestDistSq = DistSq;
-				BestPawn = TestPawn;
-			}
-		}
-	}
-
-	if (BestPawn)
-	{
-		SetEnemy(BestPawn);
-	}
-}
-
-void AAI_Deer_Controller::SetEnemy(class APawn *InPawn)
-{
-	BlackboardComp->SetValueAsObject(EnemyKeyID, InPawn);
-	BlackboardComp->SetValueAsVector(EnemyLocationID, InPawn->GetActorLocation());
-}
 
 //True if Deer is facing player and player is within a certain distance
 bool AAI_Deer_Controller::checkIfPlayerSeen()
@@ -82,18 +51,25 @@ bool AAI_Deer_Controller::checkIfPlayerSeen()
 	FVector botLoc = MyDeer->GetActorLocation();
 	FVector playerLoc = player->GetActorLocation();
 
-	//get rotation of deer to tell what direction it's facing
-	FRotator deerRotation = MyDeer->GetActorRotation();
+	float yDistance = abs(botLoc.Y - playerLoc.Y);
+	float zDistance = abs(botLoc.Z - playerLoc.Z);
 
-	if (botLoc.Y - playerLoc.Y < 0 && !(MyDeer->isFacingRight) )
+
+	// Check to see if player is in the seeing range
+	if (yDistance <= chargeYDistance && zDistance <= chargeZDistance)
 	{
-		chasePlayer();
-		return true;
-	}
-	else if (botLoc.Y - playerLoc.Y > 0 && MyDeer->isFacingRight)
-	{
-		chasePlayer();
-		return true;
+
+		//check if deer is facing the right way to see the player
+		if (botLoc.Y - playerLoc.Y < 0 && !(MyDeer->isFacingRight))
+		{
+			chasePlayer();
+			return true;
+		}
+		else if (botLoc.Y - playerLoc.Y > 0 && MyDeer->isFacingRight)
+		{
+			chasePlayer();
+			return true;
+		}
 	}
 
 	return false;
@@ -101,14 +77,7 @@ bool AAI_Deer_Controller::checkIfPlayerSeen()
 
 void AAI_Deer_Controller::idle()
 {
-
-	//forget the player for now, we've stopped chasing
-	BlackboardComp->ClearValue(EnemyKeyID);
-	BlackboardComp->ClearValue(EnemyLocationID);
-
-	MyDeer->isCharging = false;
-
-
+	//if we need to do anything special for idle, this is where it would be done
 }
 
 void AAI_Deer_Controller::chasePlayer()
