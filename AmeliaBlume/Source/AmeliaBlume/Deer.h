@@ -29,22 +29,29 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		bool isFacingRight;
-	
+
 	UPROPERTY(EditAnywhere)
-		int8 faceDirection;
+		bool isCharging;
+
+	UPROPERTY(EditAnywhere)
+		bool isInChargeUp;
+
+	UPROPERTY(EditAnywhere)
+		int32 chargeUpCooldown;
 
 	UPROPERTY(EditAnywhere)
 		bool recentlyRotated;
 
-	UPROPERTY(EditAnywhere)
-		int32 rotationCooldown;
-
-	UPROPERTY(EditAnywhere)
-		bool isCharging;
 
 	//override default tick function
 	virtual void Tick(float DeltaTime) override;
 	virtual void MoveRight(float value);
 
+private:
+	UPROPERTY(EditAnywhere)
+		int8 faceDirection;
+
+	UPROPERTY(EditAnywhere)
+		int32 rotationCooldown;
 	
 };

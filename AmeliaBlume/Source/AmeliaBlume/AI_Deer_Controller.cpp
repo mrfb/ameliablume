@@ -85,15 +85,15 @@ bool AAI_Deer_Controller::checkIfPlayerSeen()
 	//get rotation of deer to tell what direction it's facing
 	FRotator deerRotation = MyDeer->GetActorRotation();
 
-	if (botLoc.Y - playerLoc.Y < 0 && !(deerRotation.Yaw > 80 && deerRotation.Yaw < 100) )
+	if (botLoc.Y - playerLoc.Y < 0 && !(MyDeer->isFacingRight) )
 	{
+		chasePlayer();
 		return true;
-		MyDeer->isCharging = true;
 	}
-	else if (botLoc.Y - playerLoc.Y > 0 && (deerRotation.Yaw > -100 && deerRotation.Yaw < -80))
+	else if (botLoc.Y - playerLoc.Y > 0 && MyDeer->isFacingRight)
 	{
+		chasePlayer();
 		return true;
-		MyDeer->isCharging = true;
 	}
 
 	return false;
@@ -113,5 +113,11 @@ void AAI_Deer_Controller::idle()
 
 void AAI_Deer_Controller::chasePlayer()
 {
-
+	//make sure the deer is not already charging
+	if (!(MyDeer->isCharging) && !(MyDeer->recentlyRotated))
+	{
+		MyDeer->isCharging = true;
+		MyDeer->isInChargeUp = true;
+		MyDeer->chargeUpCooldown = 60;
+	}
 }
