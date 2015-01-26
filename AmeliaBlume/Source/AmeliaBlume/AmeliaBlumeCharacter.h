@@ -2,6 +2,8 @@
 #pragma once
 #include "GameFramework/Character.h"
 #include "WaterDrop.h"
+#include "Seed.h"
+#include "VineSeed.h"
 #include "AmeliaBlumeCharacter.generated.h"
 
 
@@ -21,6 +23,12 @@ class AAmeliaBlumeCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, Category = Spawning)
 		TSubclassOf<class AWaterDrop> WhatToSpawn;
 
+	UPROPERTY(EditAnywhere, Category = Spawning)
+		TSubclassOf<class ASeed> ActiveSeed;
+
+	UPROPERTY(EditAnywhere)
+		TArray<TSubclassOf<ASeed>> Seeds;
+
 	UPROPERTY(EditAnywhere)
 		bool isFacingRight;
 
@@ -36,6 +44,8 @@ protected:
 	void TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location);
 
 	void StartWater();
+
+	void ThrowSeed();
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
