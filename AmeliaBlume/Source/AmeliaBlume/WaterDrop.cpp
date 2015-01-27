@@ -17,7 +17,13 @@ void AWaterDrop::DoSomething()
 
 void AWaterDrop::Tick(float DeltaSeconds)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Tick is called"));
+	//UE_LOG(LogTemp, Warning, TEXT("Tick is called"));
+}
+
+void AWaterDrop::OnCollision()
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Tick is called"));
+	Destroy();
 }
 
 

@@ -17,6 +17,8 @@ public:
 
 	void DoSomething();
 
+	void OnCollision();
+
 	virtual void Tick(float DeltaSeconds) OVERRIDE;
 
 	AWaterDrop(const FObjectInitializer& ObjectInitializer);
