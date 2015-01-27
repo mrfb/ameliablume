@@ -44,6 +44,11 @@ AAmeliaBlumeCharacter::AAmeliaBlumeCharacter(const FObjectInitializer& ObjectIni
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	//this would lock it to the location in the editor but it's not working properly
+	//lockedAxisValue = GetActorLocation().X;
+	//This locks it to the current location of the plane axis
+	lockedAxisValue = 1210.0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -66,6 +71,16 @@ void AAmeliaBlumeCharacter::SetupPlayerInputComponent(class UInputComponent* Inp
 	InputComponent->BindTouch(IE_Released, this, &AAmeliaBlumeCharacter::TouchStopped);
 
 
+}
+
+void AAmeliaBlumeCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	//making sure the player stays on the correct plane
+	FVector currLoc = GetActorLocation();
+	FVector newLoc = FVector(lockedAxisValue, currLoc.Y, currLoc.Z);
+	SetActorLocation(newLoc);
 }
 
 void AAmeliaBlumeCharacter::MoveRight(float Value)
