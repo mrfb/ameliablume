@@ -18,6 +18,8 @@ public:
 
 	ASoil(const FObjectInitializer& ObjectInitializer);
 
+
+	//Current amount of water being held in the soil
 	UPROPERTY(EditAnywhere)
 		int32 hydrationLevel;
 	

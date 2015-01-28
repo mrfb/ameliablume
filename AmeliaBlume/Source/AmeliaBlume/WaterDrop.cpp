@@ -6,24 +6,33 @@
 AWaterDrop::AWaterDrop(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	//PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
+	canDestroy = false;
+	destroyTimer = 2;
 }
 
 
 void AWaterDrop::DoSomething()
 {
-	UE_LOG(LogTemp, Warning, TEXT("You Are Holding RT"));
+	//UE_LOG(LogTemp, Warning, TEXT("You Are Holding RT"));
 }
 
 void AWaterDrop::Tick(float DeltaSeconds)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Tick is called"));
+	if (!canDestroy){
+		destroyTimer++;
+		if (destroyTimer > 70)
+			canDestroy = true;
+	}
+	if (canDestroy){
+		Destroy();
+	}
 }
 
 void AWaterDrop::OnCollision()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Tick is called"));
-	Destroy();
+	//canDestroy = true;
+	//destroyTimer = GetWorld()->GetTimeSeconds();
 }
 
 

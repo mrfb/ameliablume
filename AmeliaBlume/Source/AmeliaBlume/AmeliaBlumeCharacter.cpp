@@ -39,7 +39,7 @@ AAmeliaBlumeCharacter::AAmeliaBlumeCharacter(const FObjectInitializer& ObjectIni
 	GetCharacterMovement()->MaxFlySpeed = 600.f;
 
 	isFacingRight = true;
-	waterCooldown = 1;
+	waterCooldown = 1; //Water cooldown is 1 second because the particle system takes this long to cycle
 
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
@@ -88,6 +88,8 @@ void AAmeliaBlumeCharacter::MoveRight(float Value)
 	// add movement in that direction
 	AddMovementInput(FVector(0.f,-1.f,0.f), Value);
 	//UE_LOG(LogTemp, Warning, TEXT("Facing right = %d"),isFacingRight);
+
+	//Determine Amelia's direction based on the last direction she moved
 	if (Value < 0)
 		isFacingRight = false;
 	else if (Value > 0)
@@ -98,11 +100,13 @@ void AAmeliaBlumeCharacter::MoveRight(float Value)
 
 void AAmeliaBlumeCharacter::KeepWatering(float Value)
 {
-	GetWorld()->GetTimeSeconds();
+	GetWorld()->GetTimeSeconds(); //Get amount of time passed in the game
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), waterCooldown);
-	if (Value > 0 && (GetWorld()->GetTimeSeconds() - waterCooldown) > 1)
+	
+	// Spawn water if trigger is held and at least one second has passed since the last spawned water
+	if (Value > 0 && (GetWorld()->GetTimeSeconds() - waterCooldown) > 1) 
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Watering %d"), waterCooldown);
+		//UE_LOG(LogTemp, Warning, TEXT("Watering %d"), waterCooldown);
 		waterCooldown = GetWorld()->GetTimeSeconds();
 		StartWater();
 	}
@@ -122,8 +126,8 @@ void AAmeliaBlumeCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, co
 void AAmeliaBlumeCharacter::StartWater()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("You pressed RT"));
-	UWorld* const World = GetWorld();
-	if (World)
+	UWorld* const World = GetWorld(); 
+	if (World) //Test to make sure world is valid
 	{
 		// Set the spawn parameters
 		FActorSpawnParameters SpawnParams;
@@ -131,20 +135,20 @@ void AAmeliaBlumeCharacter::StartWater()
 		SpawnParams.Instigator = Instigator;
 
 		// Get a random location to spawn at
-		FVector SpawnLocation = GetActorLocation();
+		FVector SpawnLocation = GetActorLocation(); //Get location of Amelia
 		if (isFacingRight)
-			SpawnLocation.Y = SpawnLocation.Y - 100;
+			SpawnLocation.Y = SpawnLocation.Y - 100; //Spawn water in front of amelia by 100 units
 		else
 			SpawnLocation.Y = SpawnLocation.Y + 100;
 
 		// Get a random rotation for the spawned item
-		FRotator SpawnRotation;
+		FRotator SpawnRotation; //Give each drop a random rotation 
 		SpawnRotation.Yaw = FMath::FRand() * 360.f;
 		SpawnRotation.Pitch = FMath::FRand() * 360.f;
 		SpawnRotation.Roll = FMath::FRand() * 360.f;
 
 		// spawn the water
-		AWaterDrop* const water = World->SpawnActor<AWaterDrop>(WhatToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		AWaterDrop* const water = World->SpawnActor<AWaterDrop>(WhatToSpawn, SpawnLocation, SpawnRotation, SpawnParams); //Actually spawns water
 
 	}
 }
